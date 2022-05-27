@@ -1,9 +1,16 @@
 global using HeroAPI.Data;
 global using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var logger = new LoggerConfiguration()
+       .ReadFrom.Configuration(builder.Configuration)
+       .Enrich.FromLogContext()
+       .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(options =>

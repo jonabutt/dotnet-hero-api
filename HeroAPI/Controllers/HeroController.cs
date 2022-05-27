@@ -9,16 +9,18 @@ namespace HeroAPI.Controllers
     public class HeroController : ControllerBase
     {             
         private readonly DataContext _context;
-
-        public HeroController(DataContext context)
+        private readonly ILogger<HeroController> _logger;
+        public HeroController(DataContext context, ILogger<HeroController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/v1/Hero
         [HttpGet]
         public async Task<ActionResult<IDictionary<int, Hero>>> GetHeros()
         {
+            _logger.LogInformation("Entered in GetHeros...");
             return Ok(await _context.Heroes.ToDictionaryAsync(heros=>heros.Id, heros => heros));
         }
 
