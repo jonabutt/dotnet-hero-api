@@ -7,30 +7,26 @@ namespace HeroAPI.Controllers
     [Route("api/v1/[controller]")]
     [ApiController]
     public class HeroController : ControllerBase
-    {
+    {             
+        private readonly DataContext _context;
 
-        private static Dictionary<int, Hero> heros = new Dictionary<int, Hero>()
-            {
-                {1,new Hero(){ Id=1,Name="Superman",FirstName="Clark",LastName="Kent",Location="SmallVille"} }
-            };
-        public HeroController()
+        public HeroController(DataContext context)
         {
-            
+            _context = context;
         }
 
         // GET: api/v1/Hero
         [HttpGet]
         public async Task<ActionResult<IDictionary<int, Hero>>> GetHeros()
         {
-            return Ok(heros);
+            return Ok(await _context.Heroes.ToDictionaryAsync(heros=>heros.Id, heros => heros));
         }
 
         // GET: api/v1/Hero/1
         [HttpGet("{id}")]
         public async Task<ActionResult<Hero>> GetHero(int id)
         {
-            Hero? hero = null;
-            heros.TryGetValue(id, out hero);
+            Hero? hero = await _context.Heroes.FindAsync(id);
 
             if (hero == null)
             {
@@ -43,7 +39,8 @@ namespace HeroAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Hero>> AddHero(Hero newHero)
         {
-            heros.Add(newHero.Id,newHero);
+            await _context.Heroes.AddAsync(newHero);
+            await _context.SaveChangesAsync();
             return CreatedAtAction("GetHeroItem", new { id = newHero.Id }, newHero);
         }
 
@@ -55,25 +52,30 @@ namespace HeroAPI.Controllers
             {
                 return BadRequest();
             }
-            if(!heros.ContainsKey(id))
+            Hero? hero = await _context.Heroes.FindAsync(id);
+            if(hero==null)
             {
                 return NotFound();
             }
-            heros[id] = updatedHero;
-
+            hero.Name = updatedHero.Name;
+            hero.FirstName = updatedHero.FirstName;
+            hero.LastName = updatedHero.LastName;
+            hero.Location = updatedHero.Location;
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
         // DELETE: api/v1/Hero
         [HttpDelete]
         public async Task<ActionResult<Hero>> DeleteHero(int id)
-        {            
-            if (!heros.ContainsKey(id))
+        {
+            Hero? hero = _context.Heroes.Find(id);
+            if (hero==null)
             {
                 return NotFound();
             }
-            heros.Remove(id);
-
+            _context.Heroes.Remove(hero);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
     }
