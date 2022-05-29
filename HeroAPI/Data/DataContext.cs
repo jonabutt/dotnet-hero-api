@@ -12,5 +12,7 @@ namespace HeroAPI.Data
         }
 
         public DbSet<Hero> Heroes { get; set; }
+
+        public DbSet<User> Users { get; set; }
     }
 }
