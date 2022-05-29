@@ -13,5 +13,13 @@ namespace HeroAPI.Helpers.Auth
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
+
+        public static bool PasswordIsValid(string password, byte[] salt, byte[] passwordHash)
+        {
+            using (var hmac = new HMACSHA512(salt))
+            {
+                return hmac.ComputeHash(Encoding.UTF8.GetBytes(password)).SequenceEqual(passwordHash);
+            }
+        }
     }
 }
