@@ -48,7 +48,7 @@ namespace HeroAPI.Controllers
 
         // POST: api/v1/Hero
         [HttpPut]
-        public async Task<ActionResult<Hero>> UpdateHero(int id,Hero updatedHero)
+        public async Task<ActionResult> UpdateHero(int id,Hero updatedHero)
         {
             if (id != updatedHero.Id)
             {
@@ -69,7 +69,7 @@ namespace HeroAPI.Controllers
 
         // DELETE: api/v1/Hero
         [HttpDelete]
-        public async Task<ActionResult<Hero>> DeleteHero(int id)
+        public async Task<ActionResult> DeleteHero(int id)
         {
             Hero? hero = _context.Heroes.Find(id);
             if (hero==null)
