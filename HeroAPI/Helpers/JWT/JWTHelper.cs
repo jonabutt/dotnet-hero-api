@@ -12,7 +12,8 @@ namespace HeroAPI.Helpers.JWT
         {
             List<Claim> claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name,userModel.Username)
+                new Claim(ClaimTypes.Name,userModel.Username),
+                new Claim(ClaimTypes.Role,"Admin")
             };
 
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));

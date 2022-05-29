@@ -1,4 +1,5 @@
 ﻿using HeroAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace HeroAPI.Controllers
         }
 
         // GET: api/v1/Hero
-        [HttpGet]
+        [HttpGet, Authorize(Roles ="Admin")]
         public async Task<ActionResult<IDictionary<int, Hero>>> GetHeros()
         {
             _logger.LogInformation("Entered in GetHeros...");
